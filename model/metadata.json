@@ -1,0 +1,23 @@
+{
+  "model_name": "harga-rumah-rf",
+  "model_version": "v1",
+  "trained_at": "2026-11-27T11:15:30+00:00",
+  "metrics": {
+    "mae": 251090275,
+    "r2": 0.8923
+  },
+  "n_train": 1600,
+  "n_test": 400,
+  "features": [
+    "luas_tanah_m2",
+    "luas_bangunan_m2",
+    "kamar_tidur",
+    "kamar_mandi",
+    "jarak_ke_pusat_km",
+    "umur_bangunan_tahun",
+    "kota"
+  ],
+  "target": "harga",
+  "python_version": "3.11.15",
+  "sklearn_version": "1.9.1"
+}

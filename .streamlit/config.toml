@@ -1,0 +1,14 @@
+# Konfigurasi Streamlit. Dibaca saat `streamlit run` dijalankan dari folder project,
+# baik di laptop maupun di dalam container (folder .streamlit/ ikut di-COPY ke image).
+
+[server]
+# true = tidak membuka browser otomatis & tidak menanyakan email saat pertama kali jalan.
+# Buka sendiri: http://localhost:8501
+headless = true
+
+[browser]
+gatherUsageStats = false
+
+[client]
+# Sembunyikan tombol "Deploy" & menu developer — fokus kita hari ini Docker.
+toolbarMode = "viewer"

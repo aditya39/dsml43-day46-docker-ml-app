@@ -1,0 +1,23 @@
+# virtualenv & cache
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# data: data/train.csv SENGAJA di-commit (dipakai tab "Data" di UI dan ikut masuk image UI).
+# File lain hasil eksperimen (mis. python make_dataset.py --scenario drift ...) tidak di-commit.
+data/*
+!data/train.csv
+
+# rahasia
+.env
+.streamlit/secrets.toml
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Catatan: model/ sengaja TIDAK di-ignore. Model kecil (±3 MB) boleh di-commit
+# supaya repo langsung bisa di-docker build setelah clone. Model besar → registry (Day 47).

@@ -1,0 +1,35 @@
+# docker-compose.yml — jalankan API + UI dengan satu perintah.
+#   docker compose up -d --build     → build kedua image + start kedua container
+#   docker compose ps                → status (tunggu "healthy")
+#   docker compose logs -f ui        → lihat log (ganti "ui" dengan "api" untuk log API)
+#   docker compose down              → stop & hapus container (image tetap ada)
+#
+# Port di laptop bisa diganti lewat env API_PORT / UI_PORT (atau file .env, lihat .env.example):
+#   macOS/Linux : API_PORT=8080 UI_PORT=8502 docker compose up -d --build
+#   PowerShell  : $env:API_PORT=8080; $env:UI_PORT=8502; docker compose up -d --build
+#
+# Dua container ini otomatis berada di satu network buatan compose, dan saling memanggil
+# memakai NAMA SERVICE. Karena itu UI memanggil http://api:8000, bukan http://localhost:8000.
+services:
+  api:
+    build: .
+    image: harga-rumah-api:1.0
+    ports:
+      - "${API_PORT:-8000}:8000"
+    environment:
+      MODEL_PATH: /app/model/model.joblib
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    image: harga-rumah-ui:1.0
+    ports:
+      - "${UI_PORT:-8501}:8501"
+    environment:
+      API_URL: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy   # UI baru start setelah HEALTHCHECK API lolos
+    restart: unless-stopped

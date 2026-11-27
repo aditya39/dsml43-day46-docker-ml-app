@@ -1,0 +1,36 @@
+# Dockerfile.ui — image untuk Streamlit UI. Polanya SAMA dengan Dockerfile (API):
+# multi-stage, slim, non-root, healthcheck. Bedanya hanya isi & port.
+# Build : docker build -f Dockerfile.ui -t harga-rumah-ui:1.0 .
+# Run   : docker run -d --name harga-ui -p 8501:8501 harga-rumah-ui:1.0
+#         → tanpa API_URL = mode lokal (model ikut di dalam image).
+#         Di docker compose, API_URL=http://api:8000 → mode API.
+
+# ---------- Stage 1: builder — install dependency ke virtualenv ----------
+FROM python:3.11-slim AS builder
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+# requirements-ui.txt memuat baris "-r requirements.txt", jadi dua-duanya di-COPY.
+COPY requirements.txt requirements-ui.txt ./
+RUN pip install --no-cache-dir -r requirements-ui.txt \
+    && pip uninstall -y pip setuptools \
+    && find /opt/venv -type d -name tests -prune -exec rm -rf {} +
+
+# ---------- Stage 2: runtime — hanya yang perlu untuk menjalankan UI ----------
+FROM python:3.11-slim AS runtime
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:$PATH"
+RUN useradd --create-home --uid 10001 appuser
+WORKDIR /app
+COPY --from=builder /opt/venv /opt/venv
+COPY .streamlit/ ./.streamlit/
+COPY model/ ./model/
+COPY data/train.csv ./data/
+# Kode UI paling sering diedit → di-COPY paling akhir supaya layer di atasnya tetap CACHED.
+COPY ui/ ./ui/
+USER appuser
+EXPOSE 8501
+HEALTHCHECK --interval=30s --timeout=3s --start-period=15s --retries=3 \
+    CMD python -c \
+    "import urllib.request as u; u.urlopen('http://127.0.0.1:8501/_stcore/health')"
+CMD ["streamlit", "run", "ui/app.py", "--server.port=8501", "--server.address=0.0.0.0"]

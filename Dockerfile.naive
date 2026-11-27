@@ -1,0 +1,10 @@
+# Dockerfile.naive — versi "yang penting jalan". JANGAN ditiru untuk produksi.
+# Dipakai di Bagian C (Eksperimen 3): bandingkan ukurannya dengan Dockerfile (optimized).
+# Build : docker build -f Dockerfile.naive -t harga-rumah-api:naive .
+# Run   : docker run -d --name harga-naive -p 8000:8000 harga-rumah-api:naive
+FROM python:3.11
+WORKDIR /app
+COPY . .
+RUN pip install -r requirements.txt
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

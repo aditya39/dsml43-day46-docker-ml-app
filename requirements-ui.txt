@@ -1,0 +1,41 @@
+# requirements-ui.txt — Streamlit UI = SEMUA dependency API + Streamlit & kawan-kawan.
+#
+# Kenapa dua file?
+#   requirements.txt     → API + training (fastapi, scikit-learn, ...). Dipakai image API.
+#   requirements-ui.txt  → baris "-r requirements.txt" di bawah ikut memasang isi file API,
+#                          lalu menambah streamlit, plotly, requests. Dipakai image UI.
+# Di laptop cukup SATU perintah:  pip install -r requirements-ui.txt
+# Hasilnya: image API tetap ramping (tidak ikut membawa Streamlit), sedangkan UI tetap
+# bisa memuat model sendiri (mode lokal) karena scikit-learn ikut terpasang.
+#
+# Semua versi dikunci "==". Diverifikasi dengan Python 3.11 (lokal) dan image python:3.11-slim.
+
+-r requirements.txt
+
+# --- dependency langsung UI (yang di-import ui/app.py) ---
+streamlit==1.67.0
+plotly==7.1.0
+requests==2.34.2
+
+# --- dependency turunan (dikunci juga). Dihasilkan dengan:
+#     uv pip compile --universal --python-version 3.11 ---
+altair==6.3.0
+attrs==26.1.0
+certifi==2026.11.20
+charset-normalizer==3.5.3
+itsdangerous==2.2.0
+jinja2==3.1.6
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+markupsafe==3.0.4
+packaging==26.4
+pillow==13.0.0
+protobuf==7.36.2
+pyarrow==26.0.1
+pydeck==0.9.3
+python-multipart==0.0.34
+referencing==0.37.0
+rpds-py==2026.9.1
+urllib3==2.8.0
+watchdog==7.1.1 ; sys_platform != 'darwin'
+websockets==17.4

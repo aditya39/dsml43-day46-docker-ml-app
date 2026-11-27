@@ -1,0 +1,44 @@
+# .dockerignore — file/folder yang TIDAK dikirim ke Docker saat build.
+# Berlaku untuk KETIGA Dockerfile (Dockerfile, Dockerfile.naive, Dockerfile.ui),
+# karena semuanya memakai build context yang sama: folder ini.
+# Lebih sedikit yang dikirim = build lebih cepat, image lebih kecil,
+# dan tidak ada data/rahasia yang ikut masuk image.
+
+# virtualenv lokal (isinya binary Windows/macOS — tidak jalan di Linux container)
+.venv/
+venv/
+env/
+
+# cache Python & editor
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.vscode/
+.idea/
+.DS_Store
+
+# data: hanya data/train.csv yang dipakai (tab "Data" di UI). File data lain tidak dikirim.
+data/*
+!data/train.csv
+mlruns/
+*.ipynb
+
+# rahasia — JANGAN PERNAH masuk image
+.env
+*.pem
+.streamlit/secrets.toml
+
+# git & file docker itu sendiri
+.git/
+.gitignore
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# tidak dibutuhkan di image
+scripts/
+docs/
+README.md
+
+# PENTING: model/ dan data/train.csv TIDAK di-ignore — keduanya harus ikut masuk image.
